@@ -3288,6 +3288,12 @@ static HAL_StatusTypeDef XSPI_ConfigCmd(XSPI_HandleTypeDef *hxspi, const XSPI_Re
 
       /* Configure the AR register with the address value */
       hxspi->Instance->AR = pCmd->Address;
+
+      if (pCmd->OperationType == HAL_XSPI_OPTYPE_COMMON_CFG)
+      {
+        /* Verify if programmed address fit with requirement of Reference Manual 28.5 chapter */
+        assert_param(IS_XSPI_PROG_ADDR(hxspi->Instance->AR, pCmd->Address));
+      }
     }
     else
     {
@@ -3347,12 +3353,30 @@ static HAL_StatusTypeDef XSPI_ConfigCmd(XSPI_HandleTypeDef *hxspi, const XSPI_Re
 
       /* Configure the AR register with the instruction value */
       hxspi->Instance->AR = pCmd->Address;
+
+      if (pCmd->OperationType == HAL_XSPI_OPTYPE_COMMON_CFG)
+      {
+        /* Verify if programmed address fit with requirement of Reference Manual 28.5 chapter */
+        assert_param(IS_XSPI_PROG_ADDR(hxspi->Instance->AR, pCmd->Address));
+      }
     }
     else
     {
       /* ---- Invalid command configuration (no instruction, no address) ---- */
       status = HAL_ERROR;
       hxspi->ErrorCode = HAL_XSPI_ERROR_INVALID_PARAM;
+    }
+  }
+
+  if (pCmd->DataMode != HAL_XSPI_DATA_NONE)
+  {
+    if (pCmd->OperationType == HAL_XSPI_OPTYPE_COMMON_CFG)
+    {
+      /* Configure the DLR register with the number of data */
+      hxspi->Instance->DLR = (pCmd->DataLength - 1U);
+
+      /* Verify if programmed data fit with requirement of Reference Manual 28.5 chapter */
+      assert_param(IS_XSPI_PROG_DATA(hxspi->Instance->DLR, (pCmd->DataLength - 1U)));
     }
   }
 
