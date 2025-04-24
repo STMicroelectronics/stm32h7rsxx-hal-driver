@@ -358,7 +358,6 @@ HAL_StatusTypeDef HAL_XSPI_Init(XSPI_HandleTypeDef *hxspi)
     assert_param(IS_XSPI_WRAP_SIZE(hxspi->Init.WrapSize));
     assert_param(IS_XSPI_CLK_PRESCALER(hxspi->Init.ClockPrescaler));
     assert_param(IS_XSPI_SAMPLE_SHIFTING(hxspi->Init.SampleShifting));
-    assert_param(IS_XSPI_DHQC(hxspi->Init.DelayHoldQuarterCycle));
     assert_param(IS_XSPI_CS_BOUND(hxspi->Init.ChipSelectBoundary));
     assert_param(IS_XSPI_FIFO_THRESHOLD_BYTE(hxspi->Init.FifoThresholdByte));
     assert_param(IS_XSPI_MAXTRAN(hxspi->Init.MaxTran));
@@ -442,9 +441,8 @@ HAL_StatusTypeDef HAL_XSPI_Init(XSPI_HandleTypeDef *hxspi)
         MODIFY_REG(hxspi->Instance->CR, (XSPI_CR_DMM | XSPI_CR_CSSEL),
                    (hxspi->Init.MemoryMode | hxspi->Init.MemorySelect));
 
-        /* Configure sample shifting and delay hold quarter cycle */
-        MODIFY_REG(hxspi->Instance->TCR, (XSPI_TCR_SSHIFT | XSPI_TCR_DHQC),
-                   (hxspi->Init.SampleShifting | hxspi->Init.DelayHoldQuarterCycle));
+        /* Configure sample shifting */
+        MODIFY_REG(hxspi->Instance->TCR, (XSPI_TCR_SSHIFT), hxspi->Init.SampleShifting);
 
         /* Enable XSPI */
         HAL_XSPI_ENABLE(hxspi);
@@ -3276,9 +3274,8 @@ static HAL_StatusTypeDef XSPI_ConfigCmd(XSPI_HandleTypeDef *hxspi, const XSPI_Re
                    (pCmd->InstructionMode | pCmd->InstructionDTRMode | pCmd->InstructionWidth |
                     pCmd->AddressMode     | pCmd->AddressDTRMode     | pCmd->AddressWidth));
 
-        /* The DHQC bit is linked with DDTR bit which should be activated */
-        if ((hxspi->Init.DelayHoldQuarterCycle == HAL_XSPI_DHQC_ENABLE) &&
-            (pCmd->InstructionDTRMode == HAL_XSPI_INSTRUCTION_DTR_ENABLE))
+        /* DDTR bit should be activated */
+        if (pCmd->InstructionDTRMode == HAL_XSPI_INSTRUCTION_DTR_ENABLE)
         {
           MODIFY_REG((*ccr_reg), XSPI_CCR_DDTR, HAL_XSPI_DATA_DTR_ENABLE);
         }
@@ -3315,9 +3312,8 @@ static HAL_StatusTypeDef XSPI_ConfigCmd(XSPI_HandleTypeDef *hxspi, const XSPI_Re
         MODIFY_REG((*ccr_reg), (XSPI_CCR_IMODE | XSPI_CCR_IDTR | XSPI_CCR_ISIZE),
                    (pCmd->InstructionMode | pCmd->InstructionDTRMode | pCmd->InstructionWidth));
 
-        /* The DHQC bit is linked with DDTR bit which should be activated */
-        if ((hxspi->Init.DelayHoldQuarterCycle == HAL_XSPI_DHQC_ENABLE) &&
-            (pCmd->InstructionDTRMode == HAL_XSPI_INSTRUCTION_DTR_ENABLE))
+        /* DDTR bit should be activated */
+        if (pCmd->InstructionDTRMode == HAL_XSPI_INSTRUCTION_DTR_ENABLE)
         {
           MODIFY_REG((*ccr_reg), XSPI_CCR_DDTR, HAL_XSPI_DATA_DTR_ENABLE);
         }

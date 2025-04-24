@@ -74,8 +74,7 @@ typedef struct
   uint32_t SampleShifting;            /*!< It allows to delay to 1/2 cycle the data sampling in order
                                            to take in account external signal delays.
                                            This parameter can be a value of @ref XSPI_SampleShifting */
-  uint32_t DelayHoldQuarterCycle;     /*!< It allows to hold to 1/4 cycle the data.
-                                           This parameter can be a value of @ref XSPI_DelayHoldQuarterCycle */
+  uint32_t DelayHoldQuarterCycle;     /*!< This parameter is deprecated and is not used on STM32H7RSxx devices */
   uint32_t ChipSelectBoundary;        /*!< It enables the transaction boundary feature and
                                            defines the boundary of bytes to release the chip select.
                                            This parameter can be a value of @ref XSPI_ChipSelectBoundary  */
@@ -449,6 +448,7 @@ typedef struct
   */
 
 /** @defgroup XSPI_DelayHoldQuarterCycle XSPI Delay Hold Quarter Cycle
+  * @note These constants are deprecated and are not expected to be used anymore.
   * @{
   */
 #define HAL_XSPI_DHQC_DISABLE                (0x00000000U)              /*!< No Delay                         */
