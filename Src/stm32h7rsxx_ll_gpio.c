@@ -100,7 +100,7 @@
   */
 
 /**
-  * @brief  De-initialize GPIO registers (Registers restored to their default values).
+  * @brief  De-initialize GPIO configuration registers (Registers restored to their default values).
   * @param  GPIOx GPIO Port
   * @retval An ErrorStatus enumeration value:
   *          - SUCCESS: GPIO registers are de-initialized

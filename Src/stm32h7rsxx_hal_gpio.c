@@ -283,7 +283,7 @@ void HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, const GPIO_InitTypeDef *GPIO_Init)
 }
 
 /**
-  * @brief  De-initialize the GPIOx peripheral registers to their default reset values.
+  * @brief  Reset the configuration of a pin or a set of pins for a GPIO port to the default one.
   * @param  GPIOx where x can be (A..H and M..P) to select the GPIO peripheral for STM32H7RSxx family
   * @param  GPIO_Pin specifies the port bit to be written.
   *         This parameter can be any combination of GPIO_Pin_x where x can be (0..15).
