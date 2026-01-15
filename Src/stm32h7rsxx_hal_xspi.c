@@ -2805,7 +2805,7 @@ HAL_StatusTypeDef HAL_XSPIM_Config(XSPI_HandleTypeDef *hxspi, const XSPIM_CfgTyp
     XSPIM_GetConfig(index + 1U, &(IOM_cfg[index]));
   }
 
-  /********** Disable both XSPI to configure XSPI IO Manager **********/
+  /********** Disable both XSPI to configure XSPI IO Manager *****************/
   if ((XSPI1->CR & XSPI_CR_EN) != 0U)
   {
     CLEAR_BIT(XSPI1->CR, XSPI_CR_EN);
@@ -2817,35 +2817,14 @@ HAL_StatusTypeDef HAL_XSPIM_Config(XSPI_HandleTypeDef *hxspi, const XSPIM_CfgTyp
     xspi_enabled |= 0x2U;
   }
 
-  /***************** Deactivation of previous configuration *****************/
-  CLEAR_REG(XSPIM->CR);
-
-  /******************** Activation of new configuration *********************/
-  MODIFY_REG(XSPIM->CR, XSPIM_CR_REQ2ACK_TIME, ((pCfg->Req2AckTime - 1U) << XSPIM_CR_REQ2ACK_TIME_Pos));
-
+  /***************** Store Port assignment ***********************************/
   if (hxspi->Instance == XSPI1)
   {
     IOM_cfg[0].IOPort = pCfg->IOPort ;
-    if (pCfg->nCSOverride != HAL_XSPI_CSSEL_OVR_DISABLED)
-    {
-      MODIFY_REG(XSPIM->CR, (XSPIM_CR_CSSEL_OVR_O1 | XSPIM_CR_CSSEL_OVR_EN), (pCfg->nCSOverride));
-    }
-    else
-    {
-      /* Nothing to do */
-    }
   }
   else if (hxspi->Instance == XSPI2)
   {
     IOM_cfg[1].IOPort = pCfg->IOPort ;
-    if (pCfg->nCSOverride != HAL_XSPI_CSSEL_OVR_DISABLED)
-    {
-      MODIFY_REG(XSPIM->CR, (XSPIM_CR_CSSEL_OVR_O2 | XSPIM_CR_CSSEL_OVR_EN), (pCfg->nCSOverride));
-    }
-    else
-    {
-      /* Nothing to do */
-    }
   }
   else
   {
@@ -2853,6 +2832,84 @@ HAL_StatusTypeDef HAL_XSPIM_Config(XSPI_HandleTypeDef *hxspi, const XSPIM_CfgTyp
     return HAL_ERROR;
   }
 
+  /******************** Store CSSEL_OVR settings before configuration ********/
+  uint32_t reg = XSPIM->CR;
+  uint32_t ovr_xspi1;
+  uint32_t ovr_xspi2;
+  if ((reg & XSPIM_CR_CSSEL_OVR_EN) == XSPIM_CR_CSSEL_OVR_EN)
+  {
+    if ((reg & XSPIM_CR_CSSEL_OVR_O1) == XSPIM_CR_CSSEL_OVR_O1)
+    {
+      ovr_xspi1 = HAL_XSPI_CSSEL_OVR_NCS2;
+    }
+    else
+    {
+      ovr_xspi1 = HAL_XSPI_CSSEL_OVR_NCS1;
+    }
+    if ((reg & XSPIM_CR_CSSEL_OVR_O2) == XSPIM_CR_CSSEL_OVR_O2)
+    {
+      ovr_xspi2 = HAL_XSPI_CSSEL_OVR_NCS2;
+    }
+    else
+    {
+      ovr_xspi2 = HAL_XSPI_CSSEL_OVR_NCS1;
+    }
+  }
+  else
+  {
+    ovr_xspi1 = HAL_XSPI_CSSEL_OVR_DISABLED;
+    ovr_xspi2 = HAL_XSPI_CSSEL_OVR_DISABLED;
+  }
+
+  /***************** Reset of previous configuration *************************/
+  CLEAR_REG(XSPIM->CR);
+
+  /******************** Activation of new configuration **********************/
+  MODIFY_REG(XSPIM->CR, XSPIM_CR_REQ2ACK_TIME, ((pCfg->Req2AckTime - 1U) << XSPIM_CR_REQ2ACK_TIME_Pos));
+
+  /******************** CSSEL_OVR management *********************************/
+  if (hxspi->Instance == XSPI1)
+  {
+    ovr_xspi1 = pCfg->nCSOverride;
+  }
+  else if (hxspi->Instance == XSPI2)
+  {
+    ovr_xspi2 = pCfg->nCSOverride;
+  }
+  else
+  {
+    /* Nothing to do */
+  }
+
+  uint32_t ovr_en = 0U;
+  if ((ovr_xspi1 != HAL_XSPI_CSSEL_OVR_DISABLED) || (ovr_xspi2 != HAL_XSPI_CSSEL_OVR_DISABLED))
+  {
+    ovr_en = XSPIM_CR_CSSEL_OVR_EN;
+  }
+  else
+  {
+    ovr_xspi1 = HAL_XSPI_CSSEL_OVR_NCS1;
+    ovr_xspi2 = HAL_XSPI_CSSEL_OVR_NCS1;
+  }
+
+  reg &= ~(XSPIM_CR_CSSEL_OVR_EN | XSPIM_CR_CSSEL_OVR_O1 | XSPIM_CR_CSSEL_OVR_O2);
+  if (ovr_en == XSPIM_CR_CSSEL_OVR_EN)
+  {
+    reg |= XSPIM_CR_CSSEL_OVR_EN;
+  }
+  if (ovr_xspi1 == HAL_XSPI_CSSEL_OVR_NCS2)
+  {
+    reg |= XSPIM_CR_CSSEL_OVR_O1;
+  }
+  if (ovr_xspi2 == HAL_XSPI_CSSEL_OVR_NCS2)
+  {
+    reg |= XSPIM_CR_CSSEL_OVR_O2;
+  }
+
+  MODIFY_REG(XSPIM->CR, (XSPIM_CR_CSSEL_OVR_EN | XSPIM_CR_CSSEL_OVR_O1 | XSPIM_CR_CSSEL_OVR_O2),
+             (reg & (XSPIM_CR_CSSEL_OVR_EN | XSPIM_CR_CSSEL_OVR_O1 | XSPIM_CR_CSSEL_OVR_O2)));
+
+  /******************** Management of MUXEN and MODE *************************/
   for (index = 0U; index < (XSPI_NB_INSTANCE - 1U); index++)
   {
     if (IOM_cfg[index].IOPort == IOM_cfg[index + 1U].IOPort)
@@ -2875,7 +2932,7 @@ HAL_StatusTypeDef HAL_XSPIM_Config(XSPI_HandleTypeDef *hxspi, const XSPIM_CfgTyp
     }
   }
 
-  /******* Re-enable both XSPI after configure XSPI IO Manager ********/
+  /******* Re-enable both XSPI after configure XSPI IO Manager ***************/
   if ((xspi_enabled & 0x1U) != 0U)
   {
     SET_BIT(XSPI1->CR, XSPI_CR_EN);
