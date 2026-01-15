@@ -1308,7 +1308,6 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(const RCC_PeriphCLKInitTypeDef  *Per
   {
     /* Check the parameters */
     assert_param(IS_RCC_USBPHYCCLKSOURCE(PeriphClkInit->UsbPhycClockSelection));
-
     switch (PeriphClkInit->UsbPhycClockSelection)
     {
       case RCC_USBPHYCCLKSOURCE_PLL3Q: /* PLL3_Q is used as clock source for USBPHYC */
@@ -1384,6 +1383,16 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(const RCC_PeriphCLKInitTypeDef  *Per
     __HAL_RCC_TIMCLKPRESCALER_CONFIG(PeriphClkInit->TIMPresSelection);
   }
 
+  /*---------------------- USB REF configuration --------------------------------*/
+ if ((PeriphClkInit->PeriphClockSelection & RCC_PERIPHCLK_USBREF) == RCC_PERIPHCLK_USBREF)
+  {
+    /* Check the parameters */
+    assert_param(IS_RCC_USBREFCLKSOURCE(PeriphClkInit->UsbRefClockSelection));
+
+    /* Set USB REF clock frequency*/
+    __HAL_RCC_USBREF_CONFIG(PeriphClkInit->UsbRefClockSelection);
+  }
+
   if (status == HAL_OK)
   {
     return HAL_OK;
@@ -1404,17 +1413,17 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(const RCC_PeriphCLKInitTypeDef  *Per
 void HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClkInit)
 {
   /* Set all possible values for the extended clock type parameter------------*/
-  PeriphClkInit->PeriphClockSelection = RCC_PERIPHCLK_ADC     | RCC_PERIPHCLK_ADF1    | RCC_PERIPHCLK_CEC         | \
-                                        RCC_PERIPHCLK_CKPER   | RCC_PERIPHCLK_ETH1REF | RCC_PERIPHCLK_ETH1PHY     | \
-                                        RCC_PERIPHCLK_FDCAN   | RCC_PERIPHCLK_FMC     | RCC_PERIPHCLK_I2C1_I3C1   | \
-                                        RCC_PERIPHCLK_I2C23   | RCC_PERIPHCLK_LPTIM1  | RCC_PERIPHCLK_LPTIM23     | \
-                                        RCC_PERIPHCLK_LPTIM45 | RCC_PERIPHCLK_LTDC    | RCC_PERIPHCLK_LPUART1     | \
-                                        RCC_PERIPHCLK_XSPI1   | RCC_PERIPHCLK_XSPI2   | RCC_PERIPHCLK_PSSI        | \
-                                        RCC_PERIPHCLK_RTC     | RCC_PERIPHCLK_SAI1    | RCC_PERIPHCLK_SAI2        | \
-                                        RCC_PERIPHCLK_SDMMC12 | RCC_PERIPHCLK_SPDIFRX | RCC_PERIPHCLK_SPI1        | \
-                                        RCC_PERIPHCLK_SPI23   | RCC_PERIPHCLK_SPI45   | RCC_PERIPHCLK_SPI6        | \
-                                        RCC_PERIPHCLK_TIM     | RCC_PERIPHCLK_USART1  | RCC_PERIPHCLK_USART234578 | \
-                                        RCC_PERIPHCLK_USBPHYC | RCC_PERIPHCLK_USBOTGFS;
+  PeriphClkInit->PeriphClockSelection = RCC_PERIPHCLK_ADC     | RCC_PERIPHCLK_ADF1     | RCC_PERIPHCLK_CEC         | \
+                                        RCC_PERIPHCLK_CKPER   | RCC_PERIPHCLK_ETH1REF  | RCC_PERIPHCLK_ETH1PHY     | \
+                                        RCC_PERIPHCLK_FDCAN   | RCC_PERIPHCLK_FMC      | RCC_PERIPHCLK_I2C1_I3C1   | \
+                                        RCC_PERIPHCLK_I2C23   | RCC_PERIPHCLK_LPTIM1   | RCC_PERIPHCLK_LPTIM23     | \
+                                        RCC_PERIPHCLK_LPTIM45 | RCC_PERIPHCLK_LTDC     | RCC_PERIPHCLK_LPUART1     | \
+                                        RCC_PERIPHCLK_XSPI1   | RCC_PERIPHCLK_XSPI2    | RCC_PERIPHCLK_PSSI        | \
+                                        RCC_PERIPHCLK_RTC     | RCC_PERIPHCLK_SAI1     | RCC_PERIPHCLK_SAI2        | \
+                                        RCC_PERIPHCLK_SDMMC12 | RCC_PERIPHCLK_SPDIFRX  | RCC_PERIPHCLK_SPI1        | \
+                                        RCC_PERIPHCLK_SPI23   | RCC_PERIPHCLK_SPI45    | RCC_PERIPHCLK_SPI6        | \
+                                        RCC_PERIPHCLK_TIM     | RCC_PERIPHCLK_USART1   | RCC_PERIPHCLK_USART234578 | \
+                                        RCC_PERIPHCLK_USBPHYC | RCC_PERIPHCLK_USBOTGFS | RCC_PERIPHCLK_USBREF;
 
   /* Get the ADC clock source ------------------------------------------------*/
   PeriphClkInit->AdcClockSelection          = __HAL_RCC_GET_ADC_SOURCE();
@@ -1487,6 +1496,8 @@ void HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClkInit)
   PeriphClkInit->UsbPhycClockSelection      = __HAL_RCC_GET_USBPHYC_SOURCE();
   /* Get the USB OTG FS clock source -----------------------------------------*/
   PeriphClkInit->UsbOtgFsClockSelection     = __HAL_RCC_GET_USBOTGFS_SOURCE();
+  /* Get the USB REF clock frequency -----------------------------------------*/
+  PeriphClkInit->UsbRefClockSelection       = __HAL_RCC_GET_USBREF_SOURCE();
 }
 
 /**

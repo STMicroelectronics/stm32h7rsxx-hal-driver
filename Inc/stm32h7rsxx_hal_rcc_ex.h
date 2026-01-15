@@ -50,7 +50,7 @@ extern "C" {
   */
 typedef struct
 {
-  uint32_t PeriphClockSelection;   /*!< The Extended Clock to be configured.
+  uint64_t PeriphClockSelection;   /*!< The Extended Clock to be configured.
                                         This parameter can be a value of @ref RCCEx_Periph_Clock_Selection */
 
   uint32_t FmcClockSelection;      /*!< Specifies FMC clock source
@@ -140,6 +140,9 @@ typedef struct
   uint32_t UsbPhycClockSelection;  /*!< Specifies USB PHYC clock source
                                         This parameter can be a value of @ref RCCEx_USB_PHYC_Clock_Source */
 
+  uint32_t UsbRefClockSelection;  /*!< Specifies USB REF clock frequency.
+                                        This parameter can be a value of @ref RCCEx_USB_REF_Clock_Source */
+
   uint32_t UsbOtgFsClockSelection; /*!< Specifies USB OTG FS clock source
                                         This parameter can be a value of @ref RCCEx_USB_OTGFS_Clock_Source */
 
@@ -211,38 +214,39 @@ typedef struct
 /** @defgroup RCCEx_Periph_Clock_Selection  Periph Clock Selection
   * @{
   */
-#define RCC_PERIPHCLK_FMC          (0x00000001U)
-#define RCC_PERIPHCLK_XSPI1        (0x00000002U)
-#define RCC_PERIPHCLK_XSPI2        (0x00000004U)
-#define RCC_PERIPHCLK_CKPER        (0x00000008U)
-#define RCC_PERIPHCLK_ADC          (0x00000010U)
-#define RCC_PERIPHCLK_ADF1         (0x00000020U)
-#define RCC_PERIPHCLK_CEC          (0x00000040U)
-#define RCC_PERIPHCLK_ETH1REF      (0x00000080U)
-#define RCC_PERIPHCLK_ETH1PHY      (0x00000100U)
-#define RCC_PERIPHCLK_FDCAN        (0x00000200U)
-#define RCC_PERIPHCLK_I2C23        (0x00000400U)
-#define RCC_PERIPHCLK_I2C1_I3C1    (0x00000800U)
-#define RCC_PERIPHCLK_LPTIM1       (0x00001000U)
-#define RCC_PERIPHCLK_LPTIM23      (0x00002000U)
-#define RCC_PERIPHCLK_LPTIM45      (0x00004000U)
-#define RCC_PERIPHCLK_LPUART1      (0x00008000U)
-#define RCC_PERIPHCLK_LTDC         (0x00010000U)
-#define RCC_PERIPHCLK_PSSI         (0x00020000U)
-#define RCC_PERIPHCLK_RTC          (0x00040000U)
-#define RCC_PERIPHCLK_SAI1         (0x00080000U)
-#define RCC_PERIPHCLK_SAI2         (0x00100000U)
-#define RCC_PERIPHCLK_SDMMC12      (0x00200000U)
-#define RCC_PERIPHCLK_SPDIFRX      (0x00400000U)
-#define RCC_PERIPHCLK_SPI1         (0x00800000U)
-#define RCC_PERIPHCLK_SPI23        (0x01000000U)
-#define RCC_PERIPHCLK_SPI45        (0x02000000U)
-#define RCC_PERIPHCLK_SPI6         (0x04000000U)
-#define RCC_PERIPHCLK_TIM          (0x08000000U)
-#define RCC_PERIPHCLK_USART1       (0x10000000U)
-#define RCC_PERIPHCLK_USART234578  (0x20000000U)
-#define RCC_PERIPHCLK_USBPHYC      (0x40000000U)
-#define RCC_PERIPHCLK_USBOTGFS     (0x80000000U)
+#define RCC_PERIPHCLK_FMC          ((uint64_t)(0x00000001U))
+#define RCC_PERIPHCLK_XSPI1        ((uint64_t)(0x00000002U))
+#define RCC_PERIPHCLK_XSPI2        ((uint64_t)(0x00000004U))
+#define RCC_PERIPHCLK_CKPER        ((uint64_t)(0x00000008U))
+#define RCC_PERIPHCLK_ADC          ((uint64_t)(0x00000010U))
+#define RCC_PERIPHCLK_ADF1         ((uint64_t)(0x00000020U))
+#define RCC_PERIPHCLK_CEC          ((uint64_t)(0x00000040U))
+#define RCC_PERIPHCLK_ETH1REF      ((uint64_t)(0x00000080U))
+#define RCC_PERIPHCLK_ETH1PHY      ((uint64_t)(0x00000100U))
+#define RCC_PERIPHCLK_FDCAN        ((uint64_t)(0x00000200U))
+#define RCC_PERIPHCLK_I2C23        ((uint64_t)(0x00000400U))
+#define RCC_PERIPHCLK_I2C1_I3C1    ((uint64_t)(0x00000800U))
+#define RCC_PERIPHCLK_LPTIM1       ((uint64_t)(0x00001000U))
+#define RCC_PERIPHCLK_LPTIM23      ((uint64_t)(0x00002000U))
+#define RCC_PERIPHCLK_LPTIM45      ((uint64_t)(0x00004000U))
+#define RCC_PERIPHCLK_LPUART1      ((uint64_t)(0x00008000U))
+#define RCC_PERIPHCLK_LTDC         ((uint64_t)(0x00010000U))
+#define RCC_PERIPHCLK_PSSI         ((uint64_t)(0x00020000U))
+#define RCC_PERIPHCLK_RTC          ((uint64_t)(0x00040000U))
+#define RCC_PERIPHCLK_SAI1         ((uint64_t)(0x00080000U))
+#define RCC_PERIPHCLK_SAI2         ((uint64_t)(0x00100000U))
+#define RCC_PERIPHCLK_SDMMC12      ((uint64_t)(0x00200000U))
+#define RCC_PERIPHCLK_SPDIFRX      ((uint64_t)(0x00400000U))
+#define RCC_PERIPHCLK_SPI1         ((uint64_t)(0x00800000U))
+#define RCC_PERIPHCLK_SPI23        ((uint64_t)(0x01000000U))
+#define RCC_PERIPHCLK_SPI45        ((uint64_t)(0x02000000U))
+#define RCC_PERIPHCLK_SPI6         ((uint64_t)(0x04000000U))
+#define RCC_PERIPHCLK_TIM          ((uint64_t)(0x08000000U))
+#define RCC_PERIPHCLK_USART1       ((uint64_t)(0x10000000U))
+#define RCC_PERIPHCLK_USART234578  ((uint64_t)(0x20000000U))
+#define RCC_PERIPHCLK_USBPHYC      ((uint64_t)(0x40000000U))
+#define RCC_PERIPHCLK_USBOTGFS     ((uint64_t)(0x80000000U))
+#define RCC_PERIPHCLK_USBREF       ((uint64_t)(0x0000000100000000U))
 /**
   * @}
   */
@@ -581,6 +585,21 @@ typedef struct
 #define RCC_USBPHYCCLKSOURCE_HSE       0U                        /*!< HSE selection (default) */
 #define RCC_USBPHYCCLKSOURCE_HSE_DIV2  RCC_CCIPR1_USBPHYCSEL_0 /*!< HSE div 2 selection */
 #define RCC_USBPHYCCLKSOURCE_PLL3Q     RCC_CCIPR1_USBPHYCSEL_1 /*!< PLL3 'Q' output selection */
+/**
+  * @}
+  */
+
+/** @defgroup RCCEx_USB_REF_Clock_Source Peripheral USBREF clock frequency selection
+  * @{
+  */
+#define RCC_USBREFCLKSOURCE_16M         (RCC_CCIPR1_USBREFCKSEL_1 | RCC_CCIPR1_USBREFCKSEL_0)
+#define RCC_USBREFCLKSOURCE_19_2M       RCC_CCIPR1_USBREFCKSEL_3
+#define RCC_USBREFCLKSOURCE_20M         (RCC_CCIPR1_USBREFCKSEL_3 | RCC_CCIPR1_USBREFCKSEL_0)
+#define RCC_USBREFCLKSOURCE_24M         (RCC_CCIPR1_USBREFCKSEL_3 | RCC_CCIPR1_USBREFCKSEL_1)
+#define RCC_USBREFCLKSOURCE_26M         (RCC_CCIPR1_USBREFCKSEL_3 |\
+                                         RCC_CCIPR1_USBREFCKSEL_2 | RCC_CCIPR1_USBREFCKSEL_1)
+#define RCC_USBREFCLKSOURCE_32M         (RCC_CCIPR1_USBREFCKSEL_3 |\
+                                         RCC_CCIPR1_USBREFCKSEL_1 | RCC_CCIPR1_USBREFCKSEL_0)
 /**
   * @}
   */
@@ -1379,6 +1398,30 @@ typedef struct
   */
 #define __HAL_RCC_GET_TIMCLKPRESCALER() ((uint32_t)(READ_BIT(RCC->CFGR, RCC_CFGR_TIMPRE)))
 
+/** @brief  Macro to configure the USBREF clock frequency
+  * @param  __USBREF_CLKSOURCE__ specifies the USBREF clock frequency.
+  *         This parameter can be one of the following values:
+  *            @arg RCC_USBREFCLKSOURCE_16M         16 MHz clock selected as USBPHYC clock
+  *            @arg RCC_USBREFCLKSOURCE_19_2M       19.2 MHz clock selected as USBPHYC clock
+  *            @arg RCC_USBREFCLKSOURCE_20M         20 MHz clock selected as USBPHYC clock
+  *            @arg RCC_USBREFCLKSOURCE_24M         24 MHz clock selected as USBPHYC clock
+  *            @arg RCC_USBREFCLKSOURCE_26M         26 MHz clock selected as USBPHYC clock
+  *            @arg RCC_USBREFCLKSOURCE_32M        32 MHz clock selected as USBPHYC clock
+  */
+#define __HAL_RCC_USBREF_CONFIG(__USBREF_CLKSOURCE__) \
+  MODIFY_REG(RCC->CCIPR1, RCC_CCIPR1_USBREFCKSEL, (uint32_t)(__USBREF_CLKSOURCE__))
+
+/** @brief  Macro to get the USBREF clock frequency.
+  * @retval The clock source can be one of the following values:
+  *            @arg RCC_USBREFCLKSOURCE_16M         16 MHz clock selected as USBPHYC clock
+  *            @arg RCC_USBREFCLKSOURCE_19_2M       19.2 MHz clock selected as USBPHYC clock
+  *            @arg RCC_USBREFCLKSOURCE_20M         20 MHz clock selected as USBPHYC clock
+  *            @arg RCC_USBREFCLKSOURCE_24M         24 MHz clock selected as USBPHYC clock
+  *            @arg RCC_USBREFCLKSOURCE_26M         26 MHz clock selected as USBPHYC clock
+  *            @arg RCC_USBREFCLKSOURCE_32M        32 MHz clock selected as USBPHYC clock
+  */
+#define __HAL_RCC_GET_USBREF_SOURCE() ((uint32_t)(READ_BIT(RCC->CCIPR1, RCC_CCIPR1_USBREFCKSEL)))
+
 /** @brief  Macro to configure the USBPHYC clock.
   * @param  __USBPHYC_CLKSOURCE__ specifies the USBPHYC clock source.
   *         This parameter can be one of the following values:
@@ -1749,7 +1792,8 @@ void     HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
    (((__SELECTION__) & RCC_PERIPHCLK_USART1)      == RCC_PERIPHCLK_USART1)      || \
    (((__SELECTION__) & RCC_PERIPHCLK_USART234578) == RCC_PERIPHCLK_USART234578) || \
    (((__SELECTION__) & RCC_PERIPHCLK_USBPHYC)     == RCC_PERIPHCLK_USBPHYC)     || \
-   (((__SELECTION__) & RCC_PERIPHCLK_USBOTGFS)    == RCC_PERIPHCLK_USBOTGFS))
+   (((__SELECTION__) & RCC_PERIPHCLK_USBOTGFS)    == RCC_PERIPHCLK_USBOTGFS)    || \
+   (((__SELECTION__) & RCC_PERIPHCLK_USBREF)      == RCC_PERIPHCLK_USBREF))
 
 #define IS_RCC_ADCCLKSOURCE(__SOURCE__) \
   (((__SOURCE__) == RCC_ADCCLKSOURCE_PLL2P) || \
@@ -1936,6 +1980,14 @@ void     HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
   (((__SOURCE__) == RCC_USBPHYCCLKSOURCE_HSE)      || \
    ((__SOURCE__) == RCC_USBPHYCCLKSOURCE_HSE_DIV2) || \
    ((__SOURCE__) == RCC_USBPHYCCLKSOURCE_PLL3Q))
+
+#define IS_RCC_USBREFCLKSOURCE(__SOURCE__) \
+  (((__SOURCE__) == RCC_USBREFCLKSOURCE_16M)     || \
+   ((__SOURCE__) == RCC_USBREFCLKSOURCE_19_2M)   || \
+   ((__SOURCE__) == RCC_USBREFCLKSOURCE_20M)     || \
+   ((__SOURCE__) == RCC_USBREFCLKSOURCE_24M)     || \
+   ((__SOURCE__) == RCC_USBREFCLKSOURCE_26M)     || \
+   ((__SOURCE__) == RCC_USBREFCLKSOURCE_32M))
 
 #define IS_RCC_USBOTGFSCLKSOURCE(__SOURCE__) \
   (((__SOURCE__) == RCC_USBOTGFSCLKSOURCE_HSI48) || \
