@@ -5918,7 +5918,14 @@ static HAL_StatusTypeDef CRYP_AESCCM_Process_IT(CRYP_HandleTypeDef *hcryp)
       /* Enable the CRYP peripheral */
       __HAL_CRYP_ENABLE(hcryp);
 
-      headersize_in_bytes = hcryp->Init.HeaderSize * 4U;
+      if (hcryp->Init.HeaderWidthUnit == CRYP_HEADERWIDTHUNIT_WORD)
+      {
+        headersize_in_bytes = hcryp->Init.HeaderSize * 4U;
+      }
+      else
+      {
+        headersize_in_bytes = hcryp->Init.HeaderSize;
+      }
       if (headersize_in_bytes == 0U) /* Header phase is  skipped */
       {
         /* Set the phase */
