@@ -5118,6 +5118,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_DynAddrAssign(I3C_HandleTypeDef  *hi3c,
           /* Check TX FIFO not full flag */
           if (__HAL_I3C_GET_FLAG(hi3c, HAL_I3C_FLAG_TXFNFF) == SET)
           {
+            *target_payload = 0UL;
+
             /* Check on the Rx FIFO threshold to know the Rx treatment process : byte or word */
             if (LL_I3C_GetRxFIFOThreshold(hi3c->Instance) == LL_I3C_RXFIFO_THRESHOLD_1_4)
             {
