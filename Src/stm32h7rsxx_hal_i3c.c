@@ -49,13 +49,13 @@
             (+++) Declare a DMA_HandleTypeDef handle structure for
                   the receive channel
             (+++) Declare a DMA_HandleTypeDef handle structure for
-                  the status channel
+                  the status channel (This configuration is deprecated.)
             (+++) Enable the DMAx interface clock
             (+++) Configure the DMA handle parameters
             (+++) Configure the DMA Command Common Code (CCC) channel
             (+++) Configure the DMA Tx channel
             (+++) Configure the DMA Rx channel
-            (+++) Configure the DMA Status channel
+            (+++) Configure the DMA Status channel(This configuration is deprecated.)
             (+++) Associate the initialized DMA handle to the hi3c DMA CCC, Tx, Rx or Status handle as necessary
             (+++) Configure the priority and enable the NVIC for the transfer complete interrupt on
                   the DMA CCC, Tx, Rx or Status instance
@@ -84,7 +84,7 @@
 
     (#) Configure the different FIFO parameters in I3C_FifoConfTypeDef structure as RxFifoThreshold, TxFifoThreshold
         for Controller or Target mode.
-        And enable/disable the Control or Status FIFO only for Controller Mode.
+        And enable/disable the Control or Status FIFO (This parameter is deprecated.) only for Controller Mode.
         Use HAL_I3C_SetConfigFifo() function to finalize the configuration, and HAL_I3C_GetConfigFifo() to retrieve
         FIFO configuration.
         Possibility to clear the FIFO configuration by using HAL_I3C_ClearConfigFifo() which reset the configuration
@@ -124,8 +124,8 @@
         Configure the different information related to Private or I2C transfer through I3C_PrivateTypeDef structure
         Configure the different buffer pointers and associated size needed for the driver communication
         through I3C_XferTypeDef structure
-        The I3C_XferTypeDef structure contains different parameters about Control, Status buffer,
-        and Transmit and Receive buffer.
+        The I3C_XferTypeDef structure contains different parameters about Control,
+        Status buffer (This parameter is deprecated.), and Transmit and Receive buffer.
         Use HAL_I3C_AddDescToFrame() function each time application add a descriptor in the frame before call
         a Controller IO operation interface
         One element of the frame descriptor correspond to one frame to manage through IO operation.
@@ -167,7 +167,7 @@
           using HAL_I3C_Tgt_Receive()
       (+) At the end of a transfer, the different FIFO can be flushed if necessary by using HAL_I3C_FlushAllFifo() for
           flush all the FIFO, or flush individually y using HAL_I3C_FlushTxFifo(), HAL_I3C_FlushRxFifo(),
-          HAL_I3C_FlushControlFifo(), HAL_I3C_FlushStatusFifo().
+          HAL_I3C_FlushControlFifo(), HAL_I3C_FlushStatusFifo() (This function is deprecated.).
       (+) Request a HotJoin in target mode in blocking mode using HAL_I3C_Tgt_HotJoinReq()
       (+) Request a In Band Interrupt in target mode in blocking mode using HAL_I3C_Tgt_IBIReq()
       (+) Request a Controller Role in target mode in blocking mode using HAL_I3C_Tgt_ControlRoleReq()
@@ -212,7 +212,7 @@
           Then application can easily retrieve some specific associated event data through HAL_I3C_GetCCCInfo() function
       (+) At the end of a transfer, the different FIFO can be flushed if necessary by using HAL_I3C_FlushAllFifo() for
           flush all the FIFO, or flush individually y using HAL_I3C_FlushTxFifo(), HAL_I3C_FlushRxFifo(),
-          HAL_I3C_FlushControlFifo(), HAL_I3C_FlushStatusFifo().
+          HAL_I3C_FlushControlFifo(), HAL_I3C_FlushStatusFifo() (This function is deprecated.).
       (+) Request a HotJoin in target mode in non-blocking mode using HAL_I3C_Tgt_HotJoinReq_IT
       (+) At completion, HAL_I3C_TgtHotJoinCallback() is executed and users can
            add their own code by customization of function pointer HAL_I3C_TgtHotJoinCallback()
@@ -2152,7 +2152,7 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_ConfigBusDevices(I3C_HandleTypeDef           *hi3
   * @param  pCCCDesc      : [IN]  Pointer to an I3C_CCCTypeDef structure that contains the CCC descriptor information.
   * @param  pPrivateDesc  : [IN]  Pointer to an I3C_PrivateTypeDef structure that contains the transfer descriptor.
   * @param  pXferData     : [IN/OUT] Pointer to an I3C_XferTypeDef structure that contains required transmission buffers
-  *                                  (control buffer, data buffer and status buffer).
+  *                                  (control buffer, data buffer and status buffer (This parameter is deprecated)).
   * @param  nbFrame       : [IN]  The number of CCC commands or the number of device to treat.
   * @param  option        : [IN]  Value indicates the transfer option. It can be one value of @ref I3C_OPTION_DEFINITION
   * @retval HAL Status    :       Value from HAL_StatusTypeDef enumeration.
@@ -2363,6 +2363,7 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_GetConfigResetPattern(I3C_HandleTypeDef *hi3c, ui
              This function is called only when mode is controller.
          (+) Call the function HAL_I3C_FlushStatusFifo() to flush only the content of Status FIFO.
              This function is called only when mode is controller.
+             This function is deprecated.
          (+) Call the function HAL_I3C_ClearConfigFifo() to clear the FIFOs configuration and set it to default values.
          (+) Call the function HAL_I3C_GetConfigFifo() to get the current FIFOs configuration (enabled FIFOs and
              threshold level).
@@ -2538,6 +2539,7 @@ HAL_StatusTypeDef HAL_I3C_FlushControlFifo(I3C_HandleTypeDef *hi3c)
 
 /**
   * @brief  Flush I3C status FIFO content.
+  * @note   This function is deprecated. The Status Fifo management must be done through LL usage.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @retval HAL Status :       Value from HAL_StatusTypeDef enumeration.
@@ -2730,6 +2732,8 @@ HAL_StatusTypeDef HAL_I3C_GetConfigFifo(I3C_HandleTypeDef *hi3c, I3C_FifoConfTyp
   * @note   The function @ref HAL_I3C_AddDescToFrame() must be called before initiate a transfer.
   * @note   The Tx FIFO threshold @ref HAL_I3C_TXFIFO_THRESHOLD_4_4 is not allowed when the transfer descriptor contains
   *         multiple transmission frames.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmission buffers
@@ -2830,6 +2834,12 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_TransmitCCC(I3C_HandleTypeDef *hi3c,
           I3C_ControlDataTreatment(hi3c);
         }
 
+        /* Check status fifo, and flush it (deprecated functionality) */
+        if (__HAL_I3C_GET_FLAG(hi3c, HAL_I3C_FLAG_SFNEF))
+        {
+          hi3c->Instance->SR;
+        }
+
         /* Check if hardware asks for Tx data */
         if (hi3c->TxXferCount > 0U)
         {
@@ -2894,6 +2904,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_TransmitCCC(I3C_HandleTypeDef *hi3c,
   * @note   The function @ref HAL_I3C_AddDescToFrame() must be called before initiate a transfer.
   * @note   The Tx FIFO threshold @ref HAL_I3C_TXFIFO_THRESHOLD_4_4 is not allowed when the transfer descriptor contains
   *         multiple transmission frames.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmission buffers
@@ -2989,6 +3001,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_TransmitCCC_IT(I3C_HandleTypeDef *hi3c,
   * @note   The function @ref HAL_I3C_AddDescToFrame() must be called before initiate a transfer.
   * @note   The Tx FIFO threshold @ref HAL_I3C_TXFIFO_THRESHOLD_4_4 is not allowed when the transfer descriptor contains
   *         multiple transmission frames.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmission buffers
@@ -3180,6 +3194,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_TransmitCCC_DMA(I3C_HandleTypeDef *hi3c,
   * @brief  Controller transmit direct read CCC command in polling mode.
   * @note   The function @ref HAL_I3C_AddDescToFrame() must be called before initiate a transfer.
   * @note   The RxBuf.Size must be equal to the sum of all RxBuf.Size exist in the descriptor.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmission buffers
@@ -3366,6 +3382,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_ReceiveCCC(I3C_HandleTypeDef *hi3c,
   * @brief  Controller transmit direct read CCC command in interrupt mode.
   * @note   The function @ref HAL_I3C_AddDescToFrame() must be called before initiate a transfer.
   * @note   The RxBuf.Size must be equal to the sum of all RxBuf.Size exist in the descriptor.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmission buffers
@@ -3475,6 +3493,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_ReceiveCCC_IT(I3C_HandleTypeDef *hi3c,
 /**
   * @brief  Controller transmit direct read CCC command in DMA mode.
   * @note   The function @ref HAL_I3C_AddDescToFrame() must be called before initiate a transfer.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmission buffers
@@ -3732,6 +3752,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_ReceiveCCC_DMA(I3C_HandleTypeDef *hi3c,
   * @note   The Tx FIFO threshold @ref HAL_I3C_TXFIFO_THRESHOLD_4_4 is not allowed when the transfer descriptor contains
   *         multiple transmission frames.
   * @note   The TxBuf.Size must be equal to the sum of all TxBuf.Size exist in the descriptor.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmission buffers
@@ -3896,6 +3918,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_Transmit(I3C_HandleTypeDef   *hi3c,
   * @note   The Tx FIFO threshold @ref HAL_I3C_TXFIFO_THRESHOLD_4_4 is not allowed when the transfer descriptor contains
   *         multiple transmission frames.
   * @note   The TxBuf.Size must be equal to the sum of all TxBuf.Size exist in the descriptor.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmission buffers
@@ -3989,6 +4013,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_Transmit_IT(I3C_HandleTypeDef   *hi3c,
   * @note   The Tx FIFO threshold @ref HAL_I3C_TXFIFO_THRESHOLD_4_4 is not allowed when the transfer descriptor contains
   *         multiple transmission frames.
   * @note   The TxBuf.Size must be equal to the sum of all TxBuf.Size exist in the descriptor.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmission buffers
@@ -4180,6 +4206,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_Transmit_DMA(I3C_HandleTypeDef   *hi3c,
   * @brief  Controller private read in polling mode.
   * @note   The function @ref HAL_I3C_AddDescToFrame() must be called before initiate a transfer.
   * @note   The RxBuf.Size must be equal to the sum of all RxBuf.Size exist in the descriptor.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required reception buffers
@@ -4342,6 +4370,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_Receive(I3C_HandleTypeDef   *hi3c,
   * @brief  Controller private read in interrupt mode.
   * @note   The function @ref HAL_I3C_AddDescToFrame() must be called before initiate a transfer.
   * @note   The RxBuf.Size must be equal to the sum of all RxBuf.Size exist in the descriptor.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required reception buffers
@@ -4433,6 +4463,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_Receive_IT(I3C_HandleTypeDef   *hi3c,
   * @brief  Controller private read in DMA mode.
   * @note   The function @ref HAL_I3C_AddDescToFrame() must be called before initiate a transfer.
   * @note   The RxBuf.Size must be equal to the sum of all RxBuf.Size exist in the descriptor.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required reception buffers
@@ -4629,6 +4661,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_Receive_DMA(I3C_HandleTypeDef   *hi3c,
   * @note   This function must be called to transfer read/write I3C or I2C private data or a direct read/write CCC.
   * @note   The TxBuf.Size must be equal to the sum of all TxBuf.Size exist in the descriptor.
   * @note   The RxBuf.Size must be equal to the sum of all RxBuf.Size exist in the descriptor.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmit and receive
@@ -4738,6 +4772,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_MultipleTransfer_IT(I3C_HandleTypeDef   *hi3c,
   * @note   The TxBuf.Size must be equal to the sum of all TxBuf.Size exist in the descriptor.
   * @note   The RxBuf.Size must be equal to the sum of all RxBuf.Size exist in the descriptor.
   * @note   This function must be called to transfer read/write private data or a direct read/write CCC command.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  pXferData  : [IN]  Pointer to an I3C_XferTypeDef structure that contains required transmit and receive
@@ -4995,6 +5031,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_MultipleTransfer_DMA(I3C_HandleTypeDef   *hi3c, I
 
 /**
   * @brief  Controller assign dynamic address (send a broadcast ENTDAA CCC command) in polling mode.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c           : [IN]     Pointer to an I3C_HandleTypeDef structure that contains the configuration
   *                                   information for the specified I3C.
   * @param  target_payload : [IN/OUT] Pointer to the returned target payload value.
@@ -5168,6 +5206,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_DynAddrAssign(I3C_HandleTypeDef  *hi3c,
 
 /**
   * @brief  Controller assign dynamic address (send a broadcast ENTDAA CCC command) in interrupt mode.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN]  Pointer to an I3C_HandleTypeDef structure that contains the configuration information
   *                            for the specified I3C.
   * @param  dynOption  : [IN]  Parameter indicates the Dynamic address assignment option.
@@ -5275,6 +5315,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_SetDynAddr(I3C_HandleTypeDef *hi3c, uint8_t devAd
 
 /**
   * @brief  Check if I3C target device is ready for communication.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN] Pointer to a I3C_HandleTypeDef structure that contains
   *                           the configuration information for the specified I3C.
   * @param  devAddress : [IN] Value of the device dynamic address.
@@ -5316,6 +5358,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_IsDeviceI3C_Ready(I3C_HandleTypeDef *hi3c,
 
 /**
   * @brief  Check if I2C target device is ready for communication.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN] Pointer to a I3C_HandleTypeDef structure that contains
   *                           the configuration information for the specified I3C.
   * @param  devAddress : [IN] Value of the device dynamic address.
@@ -5357,6 +5401,8 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_IsDeviceI2C_Ready(I3C_HandleTypeDef *hi3c,
 
 /**
   * @brief Controller generates arbitration (message header {S/Sr + 0x7E addr + W}) in polling mode.
+  * @note   The Status Fifo configuration is deprecated. Recommendation is to configure anb manage the Status Fifo
+  *         through LL usage. When enable through HAL, only clear of status fifo not full flag is done.
   * @param  hi3c       : [IN] Pointer to an I3C_HandleTypeDef structure that contains
   *                           the configuration information for the specified I3C.
   * @param  timeout    : [IN] Timeout duration
@@ -5424,6 +5470,13 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_GenerateArbitration(I3C_HandleTypeDef *hi3c, uint
             break;
           }
         }
+
+        /* Check status fifo, and flush it (deprecated functionality) */
+        if (__HAL_I3C_GET_FLAG(hi3c, HAL_I3C_FLAG_SFNEF))
+        {
+          hi3c->Instance->SR;
+        }
+
         /* Calculate exit_condition value based on Frame complete and error flags */
         exit_condition = (READ_REG(hi3c->Instance->EVR) & (I3C_EVR_FCF | I3C_EVR_ERRF));
       }
@@ -7811,6 +7864,12 @@ static HAL_StatusTypeDef I3C_Ctrl_Tx_ISR(struct __I3C_HandleTypeDef *hi3c, uint3
       }
     }
 
+    /* I3C Status FIFO not empty interrupt Check */
+    if (I3C_CHECK_FLAG(itMasks, HAL_I3C_FLAG_SFNEF) != RESET)
+    {
+      hi3c->Instance->SR;
+    }
+
     /* I3C target frame complete event Check */
     if (I3C_CHECK_FLAG(itMasks, I3C_EVR_FCF) != RESET)
     {
@@ -7896,6 +7955,12 @@ static HAL_StatusTypeDef I3C_Ctrl_Rx_ISR(struct __I3C_HandleTypeDef *hi3c, uint3
       }
     }
 
+    /* I3C Status FIFO not empty interrupt Check */
+    if (I3C_CHECK_FLAG(itMasks, HAL_I3C_FLAG_SFNEF) != RESET)
+    {
+      hi3c->Instance->SR;
+    }
+
     /* I3C target frame complete event Check */
     if (I3C_CHECK_FLAG(itMasks, I3C_EVR_FCF) != RESET)
     {
@@ -7978,6 +8043,12 @@ static HAL_StatusTypeDef I3C_Ctrl_Multiple_Xfer_ISR(struct __I3C_HandleTypeDef *
         /* Call receive treatment function */
         hi3c->ptrRxFunc(hi3c);
       }
+    }
+
+    /* I3C Status FIFO not empty interrupt Check */
+    if (I3C_CHECK_FLAG(itMasks, HAL_I3C_FLAG_SFNEF) != RESET)
+    {
+      hi3c->Instance->SR;
     }
 
     /* I3C target frame complete event Check */
@@ -8244,6 +8315,12 @@ static HAL_StatusTypeDef I3C_Ctrl_DAA_ISR(struct __I3C_HandleTypeDef *hi3c, uint
 #endif /* USE_HAL_I3C_REGISTER_CALLBACKS */
     }
 
+    /* I3C Status FIFO not empty interrupt Check */
+    if (I3C_CHECK_FLAG(itMasks, HAL_I3C_FLAG_SFNEF) != RESET)
+    {
+      hi3c->Instance->SR;
+    }
+
     /* I3C frame complete event Check */
     if (I3C_CHECK_FLAG(itMasks, I3C_EVR_FCF) != RESET)
     {
@@ -8282,6 +8359,12 @@ static HAL_StatusTypeDef I3C_Ctrl_Tx_DMA_ISR(struct __I3C_HandleTypeDef *hi3c, u
   /* Check that a Tx process is ongoing */
   if (hi3c->State == HAL_I3C_STATE_BUSY_TX)
   {
+    /* I3C Status FIFO not empty interrupt Check */
+    if (I3C_CHECK_FLAG(itMasks, HAL_I3C_FLAG_SFNEF) != RESET)
+    {
+      hi3c->Instance->SR;
+    }
+
     /* I3C target frame complete event Check */
     if (I3C_CHECK_FLAG(itMasks, I3C_EVR_FCF) != RESET)
     {
@@ -8350,6 +8433,12 @@ static HAL_StatusTypeDef I3C_Ctrl_Rx_DMA_ISR(struct __I3C_HandleTypeDef *hi3c, u
   /* Check that an Rx process is ongoing */
   if (hi3c->State == HAL_I3C_STATE_BUSY_RX)
   {
+    /* I3C Status FIFO not empty interrupt Check */
+    if (I3C_CHECK_FLAG(itMasks, HAL_I3C_FLAG_SFNEF) != RESET)
+    {
+      hi3c->Instance->SR;
+    }
+
     /* I3C target frame complete event Check */
     if (I3C_CHECK_FLAG(itMasks, I3C_EVR_FCF) != RESET)
     {
@@ -8418,6 +8507,12 @@ static HAL_StatusTypeDef I3C_Ctrl_Multiple_Xfer_DMA_ISR(struct __I3C_HandleTypeD
   /* Check that an Rx or Tx process is ongoing */
   if (hi3c->State == HAL_I3C_STATE_BUSY_TX_RX)
   {
+    /* I3C Status FIFO not empty interrupt Check */
+    if (I3C_CHECK_FLAG(itMasks, HAL_I3C_FLAG_SFNEF) != RESET)
+    {
+      hi3c->Instance->SR;
+    }
+
     /* I3C target frame complete event Check */
     if (I3C_CHECK_FLAG(itMasks, I3C_EVR_FCF) != RESET)
     {
@@ -8501,6 +8596,12 @@ static HAL_StatusTypeDef I3C_Abort_ISR(struct __I3C_HandleTypeDef *hi3c, uint32_
         /* Flush remaining Rx data */
         LL_I3C_RequestRxFIFOFlush(hi3c->Instance);
       }
+    }
+
+    /* I3C Status FIFO not empty interrupt Check */
+    if (I3C_CHECK_FLAG(itMasks, HAL_I3C_FLAG_SFNEF) != RESET)
+    {
+      hi3c->Instance->SR;
     }
 
     /* I3C Abort frame complete event Check */
@@ -8642,6 +8743,12 @@ static HAL_StatusTypeDef I3C_WaitOnFlagUntilTimeout(I3C_HandleTypeDef *hi3c, uin
       }
     }
 
+    /* Check status fifo, and flush it (deprecated functionality) */
+    if (__HAL_I3C_GET_FLAG(hi3c, HAL_I3C_FLAG_SFNEF))
+    {
+      hi3c->Instance->SR;
+    }
+
     /* Check if an error occurs during Flag waiting */
     if (__HAL_I3C_GET_FLAG(hi3c, HAL_I3C_FLAG_ERRF) == SET)
     {
@@ -8683,6 +8790,12 @@ static HAL_StatusTypeDef I3C_WaitOnDAAUntilTimeout(I3C_HandleTypeDef *hi3c, uint
           status = HAL_TIMEOUT;
         }
       }
+    }
+
+    /* Check status fifo, and flush it (deprecated functionality) */
+    if (__HAL_I3C_GET_FLAG(hi3c, HAL_I3C_FLAG_SFNEF))
+    {
+      hi3c->Instance->SR;
     }
 
     /* Check if an error occurs during Flag waiting */
@@ -8825,6 +8938,12 @@ static void I3C_ControlDataTreatment(I3C_HandleTypeDef *hi3c)
 
     /* Increment Buffer pointer */
     hi3c->pXferData->CtrlBuf.pBuffer++;
+  }
+
+  /* Check status fifo, and flush it (deprecated functionality) */
+  if (__HAL_I3C_GET_FLAG(hi3c, HAL_I3C_FLAG_SFNEF))
+  {
+    hi3c->Instance->SR;
   }
 }
 
@@ -9413,6 +9532,12 @@ static HAL_StatusTypeDef I3C_Ctrl_IsDevice_Ready(I3C_HandleTypeDef *hi3c,
 
       while (exit_condition == 0U)
       {
+        /* Check status fifo, and flush it (deprecated functionality) */
+        if (__HAL_I3C_GET_FLAG(hi3c, HAL_I3C_FLAG_SFNEF))
+        {
+          hi3c->Instance->SR;
+        }
+
         if (timeout != HAL_MAX_DELAY)
         {
           if (((HAL_GetTick() - tickstart) > timeout) || (timeout == 0U))
@@ -9507,6 +9632,9 @@ static void I3C_Enable_IRQ(I3C_HandleTypeDef *hi3c, uint32_t InterruptRequest)
   {
     /* Enable frame complete and error interrupts */
     tmpisr |= (HAL_I3C_IT_FCIE | HAL_I3C_IT_ERRIE);
+
+    /* Enable status fifo interrupts */
+    tmpisr |= HAL_I3C_IT_SFNEIE;
   }
 
   /* Check if requested interrupts are related to target hot join */
@@ -9535,6 +9663,9 @@ static void I3C_Enable_IRQ(I3C_HandleTypeDef *hi3c, uint32_t InterruptRequest)
   {
     /* Enable frame complete, control FIFO not full, transmit FIFO not full and error interrupts */
     tmpisr |= (HAL_I3C_IT_FCIE | HAL_I3C_IT_CFNFIE | HAL_I3C_IT_TXFNFIE | HAL_I3C_IT_ERRIE);
+
+    /* Enable status fifo interrupts */
+    tmpisr |= HAL_I3C_IT_SFNEIE;
   }
 
   /* Check if requested interrupts are related to controller receive in IT mode */
@@ -9542,6 +9673,9 @@ static void I3C_Enable_IRQ(I3C_HandleTypeDef *hi3c, uint32_t InterruptRequest)
   {
     /* Enable frame complete, control FIFO not full, receive FIFO not empty and error interrupts */
     tmpisr |= (HAL_I3C_IT_FCIE | HAL_I3C_IT_CFNFIE | HAL_I3C_IT_RXFNEIE | HAL_I3C_IT_ERRIE);
+
+    /* Enable status fifo interrupts */
+    tmpisr |= HAL_I3C_IT_SFNEIE;
   }
 
   /* Check if requested interrupts are related to controller transmit read or a broadcast CCC in IT mode */
@@ -9550,6 +9684,9 @@ static void I3C_Enable_IRQ(I3C_HandleTypeDef *hi3c, uint32_t InterruptRequest)
     /* Enable frame complete, transmit FIFO not full, control FIFO not full,
        receive FIFO not empty and error interrupts */
     tmpisr |= (HAL_I3C_IT_FCIE | HAL_I3C_IT_TXFNFIE | HAL_I3C_IT_CFNFIE | HAL_I3C_IT_RXFNEIE | HAL_I3C_IT_ERRIE);
+
+    /* Enable status fifo interrupts */
+    tmpisr |= HAL_I3C_IT_SFNEIE;
   }
 
   /* Check if requested interrupts are related to controller transmit broadcast ENTDAA CCC in IT mode */
@@ -9557,6 +9694,9 @@ static void I3C_Enable_IRQ(I3C_HandleTypeDef *hi3c, uint32_t InterruptRequest)
   {
     /* Enable frame complete, control FIFO not full, transmit FIFO not full and error interrupts */
     tmpisr |= (HAL_I3C_IT_FCIE | HAL_I3C_IT_CFNFIE | HAL_I3C_IT_TXFNFIE | HAL_I3C_IT_ERRIE);
+
+    /* Enable status fifo interrupts */
+    tmpisr |= HAL_I3C_IT_SFNEIE;
   }
 
   /* Enable requested interrupts */
@@ -9599,6 +9739,9 @@ static void I3C_Disable_IRQ(I3C_HandleTypeDef *hi3c, uint32_t InterruptRequest)
   {
     /* Disable frame complete and error interrupts */
     tmpisr |= (HAL_I3C_IT_FCIE | HAL_I3C_IT_ERRIE);
+
+    /* Disable status fifo interrupts */
+    tmpisr |= HAL_I3C_IT_SFNEIE;
   }
 
   /* Check if requested interrupts are related to target hot join */
@@ -9627,6 +9770,9 @@ static void I3C_Disable_IRQ(I3C_HandleTypeDef *hi3c, uint32_t InterruptRequest)
   {
     /* Disable frame complete, control FIFO not full, transmit FIFO not full and error interrupts */
     tmpisr |= (HAL_I3C_IT_FCIE | HAL_I3C_IT_CFNFIE | HAL_I3C_IT_TXFNFIE | HAL_I3C_IT_ERRIE);
+
+    /* Disable status fifo interrupts */
+    tmpisr |= HAL_I3C_IT_SFNEIE;
   }
 
   /* Check if requested interrupts are related to controller transmit read or a broadcast CCC in IT mode */
@@ -9635,6 +9781,9 @@ static void I3C_Disable_IRQ(I3C_HandleTypeDef *hi3c, uint32_t InterruptRequest)
     /* Disable frame complete, transmit FIFO not full, control FIFO not full,
        receive FIFO not empty and error interrupts */
     tmpisr |= (HAL_I3C_IT_FCIE | HAL_I3C_IT_TXFNFIE | HAL_I3C_IT_CFNFIE | HAL_I3C_IT_RXFNEIE | HAL_I3C_IT_ERRIE);
+
+    /* Disable status fifo interrupts */
+    tmpisr |= HAL_I3C_IT_SFNEIE;
   }
 
   /* Check if requested interrupts are related to controller transmit broadcast ENTDAA CCC in IT mode */
@@ -9642,6 +9791,9 @@ static void I3C_Disable_IRQ(I3C_HandleTypeDef *hi3c, uint32_t InterruptRequest)
   {
     /* Disable frame complete, control FIFO not full, transmit FIFO not full and error interrupts */
     tmpisr |= (HAL_I3C_IT_FCIE | HAL_I3C_IT_CFNFIE | HAL_I3C_IT_TXFNFIE | HAL_I3C_IT_ERRIE);
+
+    /* Disable status fifo interrupts */
+    tmpisr |= HAL_I3C_IT_SFNEIE;
   }
 
   /* Disable requested interrupts */
